@@ -28,6 +28,7 @@ for page in range(1, max_page_num + 1):
     page_url = f"{url}?&page={page}"
     response = requests.get(page_url, headers=headers)
     soup = BeautifulSoup(response.text, 'html.parser')
+
     # 'type_2' 클래스를 가진 table의 tbody 내의 'tltle' 클래스를 가진 a 태그 찾기
     for a_tag in soup.select('table.type_2 tbody tr a.tltle'):
         stock_url = "https://finance.naver.com" + a_tag['href']
@@ -43,13 +44,13 @@ for page in range(1, max_page_num + 1):
             continue  # 다음 a_tag로 넘어감
         first_table_body = first_table.find('tbody')
 
-        # # 첫 번째 테이블의 데이터를 DataFrame으로 변환
+        ## 첫 번째 테이블의 데이터를 DataFrame으로 변환
         rows = []
         for tr in first_table_body.find_all('tr'):
-        #     # 열 제목(<th>)과 데이터(<td>)를 추출하되, 데이터가 비어있으면 '-'로 대체
+        # 열 제목(<th>)과 데이터(<td>)를 추출하되, 데이터가 비어있으면 '-'로 대체
             cols = [elem.text.strip() if elem.text.strip() != '' else '-' for elem in tr.find_all(['th', 'td'])]
             rows.append(cols)
-        # # 첫 번째 행을 열 이름으로, 나머지 행을 데이터로 하는 DataFrame 생성
+        # 첫 번째 행을 열 이름으로, 나머지 행을 데이터로 하는 DataFrame 생성
         df = pd.DataFrame(rows[1:], columns=rows[0]).reset_index(drop=True)
 
         # 'section trade_compare' 클래스를 가진 div 아래의 'tb_type1 tb_num' 클래스를 가진 table 찾기
@@ -60,9 +61,7 @@ for page in range(1, max_page_num + 1):
         if second_table is None:  # 두 번째 테이블을 찾지 못한 경우
             continue  # 다음 a_tag로 넘어감
 
-        # 두 번째 테이블의 데이터를 DataFrame으로 변환
-
-        # 'thead' 에서 행들을 추출
+        ## 두 번째 테이블의 데이터를 DataFrame으로 변환
         # thead에서 첫 번째 'tr'을 찾아 열 제목 추출
         thead_row = second_table.find('thead').find('tr')
         column_titles = []
@@ -74,21 +73,21 @@ for page in range(1, max_page_num + 1):
             else:
                 column_titles.append(th.get_text(strip=True))
 
-        # # 'tbody'에서 데이터 행 추출
+        # 'tbody'에서 데이터 행 추출
         tbody_rows = second_table.find('tbody').find_all('tr')
         data_rows = []
         for tr in tbody_rows:
             cols = [elem.text.strip() if elem.text.strip() != '' else '-' for elem in tr.find_all(['th', 'td'])]
             data_rows.append(cols)
         
-        # # DataFrame 생성
+        # DataFrame 생성
         second_df = pd.DataFrame(data_rows, columns=column_titles).reset_index(drop=True)
 
+        # DataFrame 합치기
         combined_df = pd.concat([df, second_df], axis=1, sort=False, ignore_index=False).reset_index(drop=True)
 
+        # DataFrame을 excel로 변환 + sheet의 이름을 종목명으로 지정
         combined_df.to_excel(excel_writer, sheet_name=stock_name[:31], index=False)
-
-
 
 # Excel 파일 저장
 excel_writer.close()
