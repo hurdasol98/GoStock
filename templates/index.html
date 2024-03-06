@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>주식 적정가 조회</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .content { text-align: center; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+<div class="content">
+    <input type="text" id="stock-code" placeholder="주식 코드 입력">
+    <button onclick="fetchStockData()">조회</button>
+    <div id="stock-data">
+        <!-- 서버로부터 받은 데이터가 여기에 표시됩니다 -->
+    </div>
+</div>
+
+<script>
+    function fetchStockData() {
+        var stockCode = $('#stock-code').val();
+        $.ajax({
+            url: '/get-stock-data/' + stockCode,
+            type: 'GET',
+            success: function(data) {
+                // 모든 값을 화면에 표시
+                var content = '<p>Average Self PER: ' + data.average_self_per + '</p>';
+                content += '<p>Average Self PBR: ' + data.average_self_pbr + '</p>';
+                content += '<p>Average Self ROE: ' + data.average_self_roe + '</p>';
+                content += '<p>Average Section PER: ' + data.average_section_per + '</p>';
+                content += '<p>Average Section PBR: ' + data.average_section_pbr + '</p>';
+                content += '<p>Average Section ROE: ' + data.average_section_roe + '</p>';
+                $('#stock-data').html(content);
+            },
+            error: function(error) {
+                console.log(error);
+                $('#stock-data').html('데이터를 불러오는데 실패했습니다. 오류: ' + error.responseText);
+            }
+        });
+        return false; // 폼의 기본 동작을 방지
+    }
+</script>
+    
+</body>
+</html>
