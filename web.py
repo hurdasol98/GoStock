@@ -17,9 +17,9 @@ def get_stock_data(stock_code):
         average_self_pbr = df.iat[16, 1]  # 예를 들어 18행 B열
         average_self_roe = df.iat[16, 2]  # 예를 들어 18행 C열
 
-        average_section_per = df.iat[18, 0]   # 예를 들어 18행 A열
-        average_section_pbr = df.iat[18, 1]  # 예를 들어 18행 B열
-        average_section_roe = df.iat[18, 2]  # 예를 들어 18행 C열
+        average_section_per = df.iat[18, 0]   # 예를 들어 20행 A열
+        average_section_pbr = df.iat[18, 1]  # 예를 들어 20행 B열
+        average_section_roe = df.iat[18, 2]  # 예를 들어 20행 C열
         
         # 모든 셀 값을 JSON 객체로 반환
         return jsonify({
