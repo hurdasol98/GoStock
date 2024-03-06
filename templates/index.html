@@ -32,6 +32,8 @@
                 content += '<p>Average Section PER: ' + data.average_section_per + '</p>';
                 content += '<p>Average Section PBR: ' + data.average_section_pbr + '</p>';
                 content += '<p>Average Section ROE: ' + data.average_section_roe + '</p>';
+                content += '<h1>적정가격 EPS×업종평균PER : ' + data.right_price_1 + '원</h1>';
+                content += '<h1>적정가격 BPS×업종평균PBR : ' + data.right_price_2 + '원</h1>';
                 $('#stock-data').html(content);
             },
             error: function(error) {
