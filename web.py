@@ -21,15 +21,19 @@ def get_stock_data(stock_code):
         average_section_roe = df.iat[18, 2]  # 예를 들어 20행 C열
 
         # 적정가격 공식(1) : EPS×업종평균PER
-        eps_2024 = df.iat[8,4]
-        right_price_1 = int(int(eps_2024)*average_section_per)
+        eps_2024 = int(df.iat[8,4])
+        right_price_1 = int(eps_2024*average_section_per)
         print('적정가격_1:', right_price_1, '원')
 
         # 적정가격 공식(2) : BPS×업종평균PBR
-        bps_2024 = df.iat[10,4]
-        right_price_2 = int(int(bps_2024)*average_section_pbr)
+        bps_2024 = int(df.iat[10,4])
+        right_price_2 = int(bps_2024*average_section_pbr)
         print('적정가격_2:', right_price_2, '원')
         
+        # 적정가격 공식(3) : EPSx(1+0.03)/(ROE-0.03) #대부분 예상 이익 성장률로 3~7%로 본다. -> 0.03 대입
+        roe_2024 = float(df.iat[4,4])
+        right_price_3 = int( eps_2024 * 1.03 / ((roe_2024/100) - 0.03))
+
         # 모든 셀 값을 JSON 객체로 반환
         return jsonify({
             'average_self_per': average_self_per,
@@ -40,7 +44,7 @@ def get_stock_data(stock_code):
             'average_section_roe': average_section_roe,
             'right_price_1': right_price_1,
             'right_price_2': right_price_2,
-
+            'right_price_3': right_price_3
         })
     except Exception as e:
         app.logger.error(f"오류 발생: {e}")
