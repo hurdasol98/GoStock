@@ -19,6 +19,14 @@
 </div>
 
 <script>
+    // Enter 키 눌렀을 때 동작 추가
+    $('#stock-code').keypress(function(event){
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if(keycode == '13'){
+            fetchStockData(); // Enter 키 누르면 조회 함수 호출
+        }
+    });
+
     function fetchStockData() {
         var stockCode = $('#stock-code').val();
         $.ajax({
